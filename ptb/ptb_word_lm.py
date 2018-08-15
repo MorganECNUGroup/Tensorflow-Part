@@ -300,13 +300,14 @@ def run_input(session,sentence,num_words_to_generate = 10):
 
 		for i in range(num_words_to_generate+num_input_words):
 			input_data = [[]]
+			predict_data = [[]]
 			if i < num_input_words:
 				input_data[0].append(word_ids[i])
 				input_args = {m.input_data:input_data ,m.initial_state:state}
 			else:
-				input_data[0].append(next_word_id)
+				predict_data[0].append(next_word_id)
 				m = m2
-				input_args = {m.input_data:input_data,m.prior_output:outputs,m.initial_state:state}
+				input_args = {m.input_data:predict_data,m.prior_output:outputs,m.initial_state:state}
 			state,top_k,probs,inputs,output,outputs,logits = session.run(
 				[
 				m.final_state,
@@ -316,13 +317,71 @@ def run_input(session,sentence,num_words_to_generate = 10):
 				m.output,
 				m.outputs,
 				m.logits],input_args)
+
+
 			next_word_id = get_predicted_word_id(top_k)
+			# print("next_word_id:")
+			# print(next_word_id)
 			word_count+=1
-			if(word_count >= num_input_words):
+			if(word_count > num_input_words):
+			#if(word_count > num_input_words):
+				print("next_word_id:")
+				print(next_word_id)
+				print("word_count")
+				print(word_count)
 				output_word_ids.append(next_word_id)
+				print("temperorart test!!!")
+				print(output_word_ids)
+				print(get_words(output_word_ids))
 
 
 	return get_words(word_ids).replace("<unk>","_")+"+"+"..."+get_words(output_word_ids)
+
+	# print("Input sentence",sentence)
+	# config = get_config()
+	# eval_config = get_config()
+	# eval_config.batch_size = 1
+	# eval_config.num_steps = 1
+	# initializer = tf.random_uniform_initializer(-config.init_scale,config.init_scale)
+	# sen = sentence
+
+	# with tf.variable_scope("model",reuse=True,initializer = initializer):
+	# 	m1 = PTBModel(is_training=False,config = eval_config,is_query=True)
+	# 	m2 = PTBModel(is_training=False,config = eval_config,is_query=True,is_generative=True)
+
+	# 	m = m1
+	# 	state = m.initial_state.eval()
+	# 	word_ids = get_input(sentence)
+	# 	num_input_words = len(word_ids)
+	# 	print("Input is ",word_ids)
+	# 	word_count = 0
+	# 	output_word_ids = []
+
+	# 	for i in range(num_words_to_generate+num_input_words):
+	# 		input_data = [[]]
+	# 		if i < num_input_words:
+	# 			input_data[0].append(word_ids[i])
+	# 			input_args = {m.input_data:input_data ,m.initial_state:state}
+	# 		else:
+	# 			input_data[0].append(next_word_id)
+	# 			m = m2
+	# 			input_args = {m.input_data:input_data,m.prior_output:outputs,m.initial_state:state}
+	# 		state,top_k,probs,inputs,output,outputs,logits = session.run(
+	# 			[
+	# 			m.final_state,
+	# 			m.top_k,
+	# 			m.probs,
+	# 			m.inputs,
+	# 			m.output,
+	# 			m.outputs,
+	# 			m.logits],input_args)
+	# 		next_word_id = get_predicted_word_id(top_k)
+	# 		word_count+=1
+	# 		if(word_count >= num_input_words):
+	# 			output_word_ids.append(next_word_id)
+
+
+	# return get_words(word_ids).replace("<unk>","_")+"+"+"..."+get_words(output_word_ids)
 
 
 def get_input(sentence):

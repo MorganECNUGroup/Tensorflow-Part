@@ -26,7 +26,7 @@ class ThreadHTTPServer(ThreadingMixIn,HTTPServer):
 	"""Handle requests in a seperate thread."""
 	def start_server(fn = None):
 		Handler.callbackfn = fn
-		server = HTTPServer(('',8080),Handler)
+		server = HTTPServer(('',8081),Handler)
 		#server.handler.callbackfn = fn
 		print('Starting server with callback fn,use <Ctrl-C> to stop',fn)
 		server.serve_forever()

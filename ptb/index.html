@@ -1,0 +1,27 @@
+<html>
+<b>Type beginging of a sentence and press Enter:</b><br>
+<input type="text" id="InputText"onkeydown="submitOnEnter()">
+<button onClick="doQuery()">Ask</button>
+<div id="result">
+</div>
+<script>
+	function submitOnEnter(){
+		if(event.keyCode ===13){
+			doQuery();
+		}
+	}
+	function doQuery(){
+		var text = document.getElementById("inputText").value;
+		var xhttp new XMLHttpRequest();
+		xhttp.open("GET","/query/"+text,true);
+		xhttp.onreadystatechange = function()
+		{
+			var responseText=xhttp.responseText;
+			if(xhttp.readyState == 4 && xhttp.status == 200){
+				document.getElementById("result").innerHTML = responseText;
+			}
+		}
+		xhttp.send(null);
+	}
+</script>
+</html>>
